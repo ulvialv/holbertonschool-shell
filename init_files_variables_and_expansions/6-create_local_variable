@@ -4,3 +4,6 @@ create_variable() {
     echo "$BEST"
 }
 
+
+
+create_variable
