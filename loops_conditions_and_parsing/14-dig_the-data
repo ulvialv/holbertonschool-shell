@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # This script counts IP and HTTP code occurrences in the Apache log
-# and sorts them from highest to lowest
+# Usage: ./14-dig_the-data <apache_log_file>
 
-awk '{count[$1" "$9]++} END {for (key in count) print count[key], key}' apache-access.log | sort -nr
+awk '{count[$1" "$9]++} END {for (key in count) print count[key], key}' "$1" | sort -nr
 
