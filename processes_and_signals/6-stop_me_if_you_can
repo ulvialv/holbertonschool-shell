@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-p=$(pgrep -f 4-to_infinity_and_beyond | head -n1) || { echo "process not found"; exit 1; }
-t=$(ps -p $p -o tty= | tr -d ' ')
-[ -w "/dev/$t" ] && printf '\003' > "/dev/$t" && echo "Sent Ctrl-C to /dev/$t (PID $p)" || echo "Cannot write /dev/$t"
+#
 
+PROC_NAME="4-to_infinity_and_beyond"
+
+
+pkill -f -- "${PROC_NAME}"
