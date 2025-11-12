@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 #
-if [ -n "$pid" ]; then
-    kill "$pid"
-    echo "4-to_infinity_and_beyond processi durduruldu (PID: $pid)"
+pid=$(pgrep -f 4-to_infinity_and_beyond || true)
+
+if [ -n "${pid}" ]; then
+    kill "${pid}"
+    echo "4-to_infinity_and_beyond processi durduruldu (PID: ${pid})"
 else
     echo "4-to_infinity_and_beyond processi bulunamadı"
 fi
