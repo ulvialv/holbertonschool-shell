@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 #
-pkill -STOP -f 4-to_infinity_and_beyond
+ps -ef | grep 4-to_infinity_and_beyond | grep -v grep | awk '{print $2}' | xargs -I {} kill -STOP {}
+
