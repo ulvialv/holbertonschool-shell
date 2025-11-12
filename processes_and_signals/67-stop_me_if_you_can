@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#
+for pid in $(ps -ef | grep 7-highlander | grep -v grep | awk '{print $2}'); do
+    kill "$pid"
+done
