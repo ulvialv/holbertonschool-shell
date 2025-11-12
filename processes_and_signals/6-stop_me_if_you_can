@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-#
-PROC_NAME="4-to_infinity_and_beyond"
-pkill -STOP -- "${PROC_NAME}"
+ps -ef | grep 4-to_infinity_and_beyond | grep -v grep | awk '{print $2}' | while read pid; do
+  kill -STOP "$pid"
+done
