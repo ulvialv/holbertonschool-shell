@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#
+PROC_NAME="4-to_infinity_and_beyond"
+pkill -f -- "${PROC_NAME}"
