@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 #
-pgrep bash
+for pid in /proc/[0-9]*; do
+    # Read the process name from /proc/[PID]/comm (suppress errors if file not readable)
+    name=$(cat "$pid/comm" 2>/dev/null)
+
+    # If the process name contains "bash", print its PID and name
+    if [[ $name == *bash* ]]; then
+        echo "$(basename "$pid") $name"
+    fi
+done
