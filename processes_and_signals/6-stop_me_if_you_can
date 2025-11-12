@@ -1,4 +1,2 @@
 #!/usr/bin/env bash
-ps -ef | grep 4-to_infinity_and_beyond | grep -v grep | awk '{print $2}' | while read pid; do
-  kill -STOP "$pid"
-done
+pkill -f 4-to_infinity_and_beyond
