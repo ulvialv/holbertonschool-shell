@@ -1,17 +1,28 @@
 #!/usr/bin/env bash
-# 6-stop_me_if_you_can
-# 4-to_infinity_and_beyond sürecini kill/killall kullanmadan durdurmaya çalışır
-# Perl ile doğrudan SIGKILL (9) gönderir
+# debug_stop.sh — hata ayıklama için
+echo "=== ps satırları (4-to_infinity_and_beyond için) ==="
+ps aux | grep -F '4-to_infinity_and_beyond' | sed -n '1,200p'
 
-# Bulunan PID'leri al (grep -F sabit string eşleşmesi yapar)
+echo
+echo "=== PID listesi ==="
+ps aux | grep -F '4-to_infinity_and_beyond' | grep -v grep | awk '{print $2, $1, $11}' | sed -n '1,200p'
+
+echo
+echo "Deneyeceğim PID'lere sinyal göndermeye çalışıyorum (Perl kullanarak)..."
 pids=$(ps aux | grep -F '4-to_infinity_and_beyond' | grep -v grep | awk '{print $2}')
+if [ -z "$pids" ]; then
+  echo "PID bulunamadı — zaten yok."
+  exit 0
+fi
 
-# Eğer PID yoksa çık
-[ -z "$pids" ] && exit 0
-
-# Hepsine SIGKILL gönder (Perl'in kill fonksiyonunu kullanıyoruz; shell'de kill komutu yok)
-# Hata mesajlarını gizle
-perl -e 'kill 9, @ARGV' $pids 2>/dev/null || true
-
-exit 0
+for pid in $pids; do
+  echo "PID: $pid  — sahip: $(ps -o user= -p $pid)"
+  # Deneme olarak önce kill 0 (kontrol) yapalım: işlem var mı?
+  if kill -0 "$pid" 2>/dev/null; then
+    echo " -> process alive, şimdi perl ile kill 9 deneyeceğim"
+    perl -e "kill 9, $pid" 2>/dev/null && echo " -> perl kill succeeded for $pid" || echo " -> perl kill failed for $pid"
+  else
+    echo " -> process yok (kill -0 failed)"
+  fi
+done
 
