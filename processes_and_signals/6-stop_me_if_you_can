@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 #
-pkill -9 4-to_infinity_and_beyond
+pgrep 4-to_infinity_and_beyond | while read pid; do
+    echo "Stopping process $pid"
+    cat /dev/null > /proc/$pid/fd/0 2>/dev/null
+done
+
