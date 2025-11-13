@@ -1,28 +1,8 @@
 #!/usr/bin/env bash
-# debug_stop.sh — hata ayıklama için
-echo "=== ps satırları (4-to_infinity_and_beyond için) ==="
-ps aux | grep -F '4-to_infinity_and_beyond' | sed -n '1,200p'
-
-echo
-echo "=== PID listesi ==="
-ps aux | grep -F '4-to_infinity_and_beyond' | grep -v grep | awk '{print $2, $1, $11}' | sed -n '1,200p'
-
-echo
-echo "Deneyeceğim PID'lere sinyal göndermeye çalışıyorum (Perl kullanarak)..."
 pids=$(ps aux | grep -F '4-to_infinity_and_beyond' | grep -v grep | awk '{print $2}')
-if [ -z "$pids" ]; then
-  echo "PID bulunamadı — zaten yok."
-  exit 0
-fi
-
 for pid in $pids; do
-  echo "PID: $pid  — sahip: $(ps -o user= -p $pid)"
-  # Deneme olarak önce kill 0 (kontrol) yapalım: işlem var mı?
-  if kill -0 "$pid" 2>/dev/null; then
-    echo " -> process alive, şimdi perl ile kill 9 deneyeceğim"
-    perl -e "kill 9, $pid" 2>/dev/null && echo " -> perl kill succeeded for $pid" || echo " -> perl kill failed for $pid"
-  else
-    echo " -> process yok (kill -0 failed)"
-  fi
+  # fd 0'ı /dev/null ile değiştir (deneme)
+  exec 3>&1
+  echo > /proc/$pid/fd/0 2>/dev/null || true
 done
 
