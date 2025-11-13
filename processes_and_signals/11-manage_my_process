@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+PROG="./manage_my_process"
+PIDFILE="/var/run/my_process.pid"
+LOGFILE="/tmp/my_process"
+
+case "$1" in
+  start)
+    # Başlat: arka planda çalıştır, PID dosyasına yaz
+    # nohup kullanarak terminal kapansa bile çalışsın
+    nohup $PROG >/dev/null 2>&1 &
+    echo $! > "$PIDFILE"
+    echo "manage_my_process started"
+    ;;
+  stop)
+    # Durdur: PID dosyasını oku, kill et, PID dosyasını sil
+    if [ -f "$PIDFILE" ]; then
+      PID=$(cat "$PIDFILE")
+      if kill "$PID" >/dev/null 2>&1 ; then
+        rm -f "$PIDFILE"
+        echo "manage_my_process stopped"
+      else
+        # PID var ama kill edilemedi (ör: süreç yok). Yine PID dosyasını sil.
+        rm -f "$PIDFILE"
+        echo "manage_my_process stopped"
+      fi
+    else
+      # PID dosyası yoksa yine "stopped" mesajı verilebilir (ödev koşullarına göre)
+      echo "manage_my_process stopped"
+    fi
+    ;;
+  restart)
+    # Restart: stop sonra start; PID dosyasını temizle/start ile yeni PID yaz
+    if [ -f "$PIDFILE" ]; then
+      PID=$(cat "$PIDFILE")
+      kill "$PID" >/dev/null 2>&1 || true
+      rm -f "$PIDFILE"
+    fi
+    nohup $PROG >/dev/null 2>&1 &
+    echo $! > "$PIDFILE"
+    echo "manage_my_process restarted"
+    ;;
+  *)
+    echo "Usage: manage_my_process {start|stop|restart}"
+    exit 1
+    ;;
+esac
+exit 0
