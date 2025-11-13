@@ -2,7 +2,6 @@
 #
 PROG="./manage_my_process"
 PIDFILE="/var/run/my_process.pid"
-LOGFILE="/tmp/my_process"
 
 case "$1" in
   start)
