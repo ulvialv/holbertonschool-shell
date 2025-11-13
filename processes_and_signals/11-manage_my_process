@@ -5,38 +5,26 @@ PIDFILE="/var/run/my_process.pid"
 
 case "$1" in
   start)
-    # Başlat: arka planda çalıştır, PID dosyasına yaz
-    # nohup kullanarak terminal kapansa bile çalışsın
-    nohup $PROG >/dev/null 2>&1 &
-    echo $! > "$PIDFILE"
+    "$PROG" &
+    echo $! | tee "$PIDFILE" >/dev/null
     echo "manage_my_process started"
     ;;
   stop)
-    # Durdur: PID dosyasını oku, kill et, PID dosyasını sil
     if [ -f "$PIDFILE" ]; then
-      PID=$(cat "$PIDFILE")
-      if kill "$PID" >/dev/null 2>&1 ; then
-        rm -f "$PIDFILE"
-        echo "manage_my_process stopped"
-      else
-        # PID var ama kill edilemedi (ör: süreç yok). Yine PID dosyasını sil.
-        rm -f "$PIDFILE"
-        echo "manage_my_process stopped"
-      fi
+      kill "$(cat "$PIDFILE")" >/dev/null 2>&1
+      rm -f "$PIDFILE"
+      echo "manage_my_process stopped"
     else
-      # PID dosyası yoksa yine "stopped" mesajı verilebilir (ödev koşullarına göre)
       echo "manage_my_process stopped"
     fi
     ;;
   restart)
-    # Restart: stop sonra start; PID dosyasını temizle/start ile yeni PID yaz
     if [ -f "$PIDFILE" ]; then
-      PID=$(cat "$PIDFILE")
-      kill "$PID" >/dev/null 2>&1 || true
+      kill "$(cat "$PIDFILE")" >/dev/null 2>&1
       rm -f "$PIDFILE"
     fi
-    nohup $PROG >/dev/null 2>&1 &
-    echo $! > "$PIDFILE"
+    "$PROG" &
+    echo $! | tee "$PIDFILE" >/dev/null
     echo "manage_my_process restarted"
     ;;
   *)
@@ -44,4 +32,5 @@ case "$1" in
     exit 1
     ;;
 esac
+
 exit 0
