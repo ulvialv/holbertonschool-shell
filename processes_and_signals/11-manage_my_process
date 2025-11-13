@@ -6,7 +6,7 @@ PIDFILE="/var/run/my_process.pid"
 case "$1" in
   start)
     "$PROG" &
-    echo $! | tee "$PIDFILE" >/dev/null
+    echo $! > "$PIDFILE"
     echo "manage_my_process started"
     ;;
   stop)
@@ -24,7 +24,7 @@ case "$1" in
       rm -f "$PIDFILE"
     fi
     "$PROG" &
-    echo $! | tee "$PIDFILE" >/dev/null
+    echo $! > "$PIDFILE"
     echo "manage_my_process restarted"
     ;;
   *)
