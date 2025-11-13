@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
-#
-pgrep 4-to_infinity_and_beyond | while read pid; do
-    echo "Stopping process $pid"
-    cat /dev/null > /proc/$pid/fd/0 2>/dev/null
-done
+# 6-stop_me_if_you_can
+# 4-to_infinity_and_beyond sürecini kill/killall kullanmadan durdurmaya çalışır
+# Perl ile doğrudan SIGKILL (9) gönderir
+
+# Bulunan PID'leri al (grep -F sabit string eşleşmesi yapar)
+pids=$(ps aux | grep -F '4-to_infinity_and_beyond' | grep -v grep | awk '{print $2}')
+
+# Eğer PID yoksa çık
+[ -z "$pids" ] && exit 0
+
+# Hepsine SIGKILL gönder (Perl'in kill fonksiyonunu kullanıyoruz; shell'de kill komutu yok)
+# Hata mesajlarını gizle
+perl -e 'kill 9, @ARGV' $pids 2>/dev/null || true
+
+exit 0
 
