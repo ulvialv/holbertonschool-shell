@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # '4-to_infinity_and_beyond' işlemini durdurur.
 # -f bayrağı, tüm komut satırını arar.
 # [4] hilesi, pkill işleminin kendisini veya diğer grep işlemlerini eşleştirmesini engeller.
